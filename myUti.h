@@ -26,15 +26,21 @@
  *       Stores variables of a class T, with an unique name
  *       for each of them.
  *       Requirements:
- *          T::T()  constructor
+ *          T::T() constructor
  *          T::operator=(T) assignment
  *       Methods:
- *          void varManager::write(string id, T val)
+ *          void write(string id, T val)
  *             Stores val with the name id. If id already
  *             exists, overwrites the current value.
- *          bool varManager::read(string id, T &val)
+ *          bool read(string id, T &val)
  *             Reads the value of a stored variable to val.
  *             Returns true on success.
+ *          bool check(string id)
+ *             Checks wheather the name id is in use or not.
+ *          T &operator [](string id)
+ *             Returns a reference to the variable with the
+ *             name id. If the variable doesn't exist, creates
+ *             it.
  *
  *    ************************************************************
  *                        Matrix functions
@@ -115,6 +121,11 @@
  *          double getA()
  *          setA(double)
  *             Angle.
+ *          double dot(vector2d)
+ *             Dot product.
+ *          double cross(vector2d)
+ *             Cross product. The result is the Z component of the
+ *             resulting 3d vector.
  *          void rotate(double angle)
  *             Rotates the vector counter-clockwise.
  *          void transform(double **matrix)
@@ -172,6 +183,10 @@
  *          setA2(double)
  *             Angle between the X axis and the projection of the
  *             vector on the XY plane.
+ *          double dot(vector3d)
+ *             Dot product.
+ *          vector3d cross(vector3d)
+ *             Cross product.
  *          void rotate(double angle, double dirX, double dirY, double dirZ)
  *             Rotates the vector counter-clockwise around the
  *             direction dirX, dirY, dirZ.
@@ -221,6 +236,8 @@ class varManager{
    public:
       void write(const std::string &id, const T &val);
       bool read(const std::string &id, T &val);
+      bool check(std::string id);
+      T &operator [](std::string id);
 };
 
 /*****************************************************************
@@ -260,6 +277,8 @@ class vector2d{
       void setR(double newR);
       double getA() const;
       void setA(double newA);
+      double dot(const vector2d &v) const;
+      double cross(const vector2d &v) const;
       void rotate(double angle);
       void transform(double **matrix);
       const vector2d &operator =(const vector2d &v);
@@ -304,6 +323,9 @@ class vector3d{
       void setA1(double newA1);
       double getA2() const;
       void setA2(double newA2);
+      double dot(const vector3d &v) const;
+      const vector3d cross(const vector3d &v) const;
+      void rotate(double angle, double dirX, double dirY, double dirZ);
       void rotate(double angle, const vector3d &v);
       void transform(double **matrix);
       const vector3d &operator =(const vector3d &v);
@@ -365,7 +387,7 @@ void varManager<T>::write(const std::string &id, const T &val){
    varType newVar(id, val);
    typename std::vector<varType>::iterator it;
    it = std::lower_bound(varList.begin(), varList.end(), newVar);
-   if (std::binary_search(varList.begin(), varList.end(), newVar)){
+   if (check(id)){
       *it = newVar;
       return;
    }
@@ -374,14 +396,30 @@ void varManager<T>::write(const std::string &id, const T &val){
 
 template <class T>
 bool varManager<T>::read(const std::string &id, T &val){
+   if (!check(id))
+      return false;
    varType newVar(id);
-   if (std::binary_search(varList.begin(), varList.end(), newVar)){
-      typename std::vector<varType>::iterator it;
+   typename std::vector<varType>::iterator it;
+   it = std::lower_bound(varList.begin(), varList.end(), newVar);
+   val = (*it).value;
+   return true;
+}
+
+template <class T>
+bool varManager<T>::check(std::string id){
+   return std::binary_search(varList.begin(), varList.end(), varType(id));
+}
+
+template <class T>
+T &varManager<T>::operator [](std::string id){
+   varType newVar(id);
+   typename std::vector<varType>::iterator it;
+   if(!check(id)){
       it = std::lower_bound(varList.begin(), varList.end(), newVar);
-      val = (*it).value;
-      return true;
+      varList.insert(it, newVar);
    }
-   return false;
+   it = std::lower_bound(varList.begin(), varList.end(), newVar);
+   return (*it).value;
 }
 
 #endif

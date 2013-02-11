@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "myUti2.h"
+#include "myUti.h"
 
 using namespace std;
 
@@ -210,6 +210,14 @@ void vector2d::setA(double newA){
    rotate(newA);
 }
 
+double vector2d::dot(const vector2d &v) const{
+   return x*v.x+y*v.y;
+}
+
+double vector2d::cross(const vector2d &v) const{
+   return x*v.y-y*v.x;
+}
+
 void vector2d::rotate(double angle){
    double oldX = x;
    x = oldX*cos(angle)-y*sin(angle);
@@ -301,7 +309,7 @@ bool vector2d::operator <=(const vector2d &v) const{
 }
 
 double vector2d::operator *(const vector2d &v) const{
-   return x*v.x+y*v.y;
+   return dot(v);
 }
 
 vector2d::operator string() const{
@@ -392,6 +400,19 @@ void vector3d::setA2(double newA2){
    y = 0;
    rotate(oldA1, dir1);
    rotate(newA2, dir2);
+}
+
+double vector3d::dot(const vector3d &v) const{
+   return x*v.x+y*v.y+z*v.z;
+}
+
+const vector3d vector3d::cross(const vector3d &v) const{
+   return vector3d(y*v.z-z*v.y, z*v.x-x*v.y, x*v.y-y*v.x);
+}
+
+void vector3d::rotate(double angle, double dirX, double dirY, double dirZ){
+   vector3d v(dirX, dirY, dirZ);
+   rotate(angle, v);
 }
 
 void vector3d::rotate(double angle, const vector3d &v){
@@ -503,7 +524,7 @@ bool vector3d::operator <=(const vector3d &v) const{
 }
 
 double vector3d::operator *(const vector3d &v) const{
-   return x*v.x+y*v.y+z*v.z;
+   return dot(v);
 }
 
 vector3d::operator string() const{
