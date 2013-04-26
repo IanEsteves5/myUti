@@ -318,6 +318,20 @@ vector2d::operator string() const{
    return st.str();
 }
 
+vector2d::operator vector<double>() const{
+   vector<double> v;
+   v.push_back(x);
+   v.push_back(y);
+   return v;
+}
+
+vector2d::operator double *() const{
+   double *p = new double[2];
+   p[0] = x;
+   p[1] = y;
+   return p;
+}
+
 const vector2d x2d(1, 0);
 const vector2d y2d(0, 1);
 
@@ -407,7 +421,7 @@ double vector3d::dot(const vector3d &v) const{
 }
 
 const vector3d vector3d::cross(const vector3d &v) const{
-   return vector3d(y*v.z-z*v.y, z*v.x-x*v.y, x*v.y-y*v.x);
+   return vector3d(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x);
 }
 
 void vector3d::rotate(double angle, double dirX, double dirY, double dirZ){
@@ -531,6 +545,22 @@ vector3d::operator string() const{
    ostringstream st;
    st << "(" << x << "," << y << "," << z << ")";
    return st.str();
+}
+
+vector3d::operator vector<double>() const{
+   vector<double> v;
+   v.push_back(x);
+   v.push_back(y);
+   v.push_back(z);
+   return v;
+}
+
+vector3d::operator double *() const{
+   double *p = new double[3];
+   p[0] = x;
+   p[1] = y;
+   p[2] = z;
+   return p;
 }
 
 const vector3d x3d(1, 0, 0);

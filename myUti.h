@@ -300,6 +300,8 @@ class vector2d{
       bool operator <=(const vector2d &v) const;
       double operator *(const vector2d &v) const;
       operator std::string() const;
+      operator std::vector<double>() const;
+      operator double *() const;
 };
 
 extern const vector2d x2d, y2d;
@@ -347,6 +349,8 @@ class vector3d{
       bool operator <=(const vector3d &v) const;
       double operator *(const vector3d &v) const;
       operator std::string() const;
+      operator std::vector<double>() const;
+      operator double *() const;
 };
 
 extern const vector3d x3d, y3d, z3d;
