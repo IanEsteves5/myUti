@@ -1,3 +1,8 @@
+/*
+ *    by Ian Esteves do Nascimento, 01/2013 - 10/2015
+ *
+ */
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "myUti.h"
@@ -566,3 +571,65 @@ vector3d::operator double *() const{
 const vector3d x3d(1, 0, 0);
 const vector3d y3d(0, 1, 0);
 const vector3d z3d(0, 0, 1);
+
+/*****************************************************************
+                       Matrix Functions
+*****************************************************************/
+
+double fraction::getN() const{
+   return n;
+}
+
+void fraction::setN(double newN){
+   n = newN;
+}
+
+double fraction::getD() const{
+   return d;
+}
+
+void fraction::setD(double newD){
+   d = newD;
+}
+
+void fraction::normalize() {
+   
+}
+
+const fraction &fraction::operator =(const fraction &f){
+   n = f.n;
+   d = f.d;
+   return f;
+}
+
+const fraction fraction::operator +(const fraction &f) const{
+   return fraction(n*f.d+d*f.n, d*f.d);
+}
+
+const fraction fraction::operator +(int i) const{
+   return fraction(n+d*i, d);
+}
+
+const fraction fraction::operator -(const fraction &f) const{
+   return fraction(n*f.d-d*f.n, d*f.d);
+}
+
+const fraction fraction::operator -(int i) const{
+   return fraction(n-d*i, d);
+}
+
+const fraction fraction::operator *(const fraction &f) const{
+   return fraction(n*f.n, d*f.d);
+}
+
+const fraction fraction::operator *(int i) const{
+   return fraction(n*i, d);
+}
+
+const fraction fraction::operator /(const fraction &f) const{
+   return fraction(n*f.d, d*f.n);
+}
+
+const fraction fraction::operator /(int i) const{
+   return fraction(n, d*i);
+}

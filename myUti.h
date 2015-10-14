@@ -1,6 +1,6 @@
 /*
  *    myUti.h
- *    01/2013
+ *    01/2013 - 10/2015
  *    by Ian Esteves do Nascimento
  *    ianesteves@poli.ufrj.br
  *    Random functions and classes for future reference.
@@ -197,6 +197,13 @@
  *             Performs a linear transformatrix. matrix must be
  *             3 by 3.
  *
+ *    ************************************************************
+ *                            Fractions
+ *    ************************************************************
+ *
+ *    class fraction
+ *      A division between 2 integers. No restrictions towards division by zero.
+ *
  */
 
 #ifndef MY_UTI_H
@@ -354,6 +361,34 @@ class vector3d{
 };
 
 extern const vector3d x3d, y3d, z3d;
+
+/*****************************************************************
+                           Fractions
+*****************************************************************/
+
+class fraction{
+   private:
+      int n, d; // numerator and denominator
+   public:
+      fraction():n(1),d(1){}
+      fraction(int newN):n(newN),d(1){}
+      fraction(int newN, int newD):n(newN),d(newD){}
+      fraction(const fraction &f):n(f.n),d(f.d){}
+      double getN() const;
+      void setN(double newN);
+      double getD() const;
+      void setD(double newD);
+      void normalize();
+      const fraction &operator =(const fraction &f);
+      const fraction operator +(const fraction &f) const;
+      const fraction operator +(int i) const;
+      const fraction operator -(const fraction &f) const;
+      const fraction operator -(int i) const;
+      const fraction operator *(const fraction &f) const;
+      const fraction operator *(int i) const;
+      const fraction operator /(const fraction &f) const;
+      const fraction operator /(int i) const;
+}
 
 /*****************************************************************
                         Implementation
