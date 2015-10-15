@@ -379,15 +379,24 @@ class fraction{
       double getD() const;
       void setD(double newD);
       void normalize();
+      void invert();
       const fraction &operator =(const fraction &f);
       const fraction operator +(const fraction &f) const;
       const fraction operator +(int i) const;
+      const fraction operator +=(const fraction &f) const;
+      const fraction operator +=(int i) const;
       const fraction operator -(const fraction &f) const;
       const fraction operator -(int i) const;
+      const fraction operator -=(const fraction &f) const;
+      const fraction operator -=(int i) const;
       const fraction operator *(const fraction &f) const;
       const fraction operator *(int i) const;
+      const fraction operator *=(const fraction &f) const;
+      const fraction operator *=(int i) const;
       const fraction operator /(const fraction &f) const;
       const fraction operator /(int i) const;
+      const fraction operator /=(const fraction &f) const;
+      const fraction operator /=(int i) const;
 }
 
 /*****************************************************************

@@ -593,7 +593,22 @@ void fraction::setD(double newD){
 }
 
 void fraction::normalize() {
-   
+   int r = n%d; // remainder
+   if(r == 0) {
+      n = n/d;
+      d = 1;
+      return;
+   }
+   fraction next(d, r);
+   next.normalize();
+   n = ((n-r)/d)*next.n+next.d;
+   d = next.n;
+}
+
+void fraction::invert() {
+   int aux = n;
+   n = d;
+   d = aux;
 }
 
 const fraction &fraction::operator =(const fraction &f){
@@ -610,12 +625,34 @@ const fraction fraction::operator +(int i) const{
    return fraction(n+d*i, d);
 }
 
+const fraction &fraction::operator +=(const fraction &f) const{
+   n = n*f.d+d*f.n;
+   d = d*f.d;
+   return *this;
+}
+
+const fraction &fraction::operator +=(int i) const{
+   n = n+d*i;
+   return *this;
+}
+
 const fraction fraction::operator -(const fraction &f) const{
    return fraction(n*f.d-d*f.n, d*f.d);
 }
 
 const fraction fraction::operator -(int i) const{
    return fraction(n-d*i, d);
+}
+
+const fraction &fraction::operator -=(const fraction &f) const{
+   n = n*f.d-d*f.n
+   d = d*f.d
+   return *this;
+}
+
+const fraction &fraction::operator -=(int i) const{
+   n = n-d*i;
+   return *this;
 }
 
 const fraction fraction::operator *(const fraction &f) const{
@@ -626,10 +663,32 @@ const fraction fraction::operator *(int i) const{
    return fraction(n*i, d);
 }
 
+const fraction &fraction::operator *=(const fraction &f) const{
+   n = n*f.n;
+   d = d*f.d;
+   return *this;
+}
+
+const fraction &fraction::operator *=(int i) const{
+   n = n*i;
+   return *this;
+}
+
 const fraction fraction::operator /(const fraction &f) const{
    return fraction(n*f.d, d*f.n);
 }
 
 const fraction fraction::operator /(int i) const{
    return fraction(n, d*i);
+}
+
+const fraction &fraction::operator /=(const fraction &f) const{
+   n = n*f.d;
+   d = d*f.n;
+   return *this;
+}
+
+const fraction &fraction::operator /=(int i) const{
+   d = d*i;
+   return *this;
 }
