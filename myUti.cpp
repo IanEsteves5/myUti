@@ -573,7 +573,7 @@ const vector3d y3d(0, 1, 0);
 const vector3d z3d(0, 0, 1);
 
 /*****************************************************************
-                       Matrix Functions
+                           Fractions
 *****************************************************************/
 
 double fraction::getN() const{
@@ -593,7 +593,7 @@ void fraction::setD(double newD){
 }
 
 void fraction::normalize() {
-   int r = n%d; // remainder
+   long r = n%d; // remainder
    if(r == 0) {
       n = n/d;
       d = 1;
@@ -605,10 +605,24 @@ void fraction::normalize() {
    d = next.n;
 }
 
+const fraction fraction::getNormalized() {
+   fraction result(n, d);
+   result.normalize();
+   return result;
+}
+
 void fraction::invert() {
-   int aux = n;
+   long aux = n;
    n = d;
    d = aux;
+}
+
+const fraction fraction::getInverted() const{
+   return fraction(d, n);
+}
+
+void fraction::toDouble() {
+   return ((double)n)/d;
 }
 
 const fraction &fraction::operator =(const fraction &f){
@@ -621,8 +635,12 @@ const fraction fraction::operator +(const fraction &f) const{
    return fraction(n*f.d+d*f.n, d*f.d);
 }
 
-const fraction fraction::operator +(int i) const{
+const fraction fraction::operator +(long i) const{
    return fraction(n+d*i, d);
+}
+
+const fraction operator +(long i, const fraction &f) const{
+   return fraction(f.n+f.d*i, f.d);
 }
 
 const fraction &fraction::operator +=(const fraction &f) const{
@@ -631,7 +649,7 @@ const fraction &fraction::operator +=(const fraction &f) const{
    return *this;
 }
 
-const fraction &fraction::operator +=(int i) const{
+const fraction &fraction::operator +=(long i) const{
    n = n+d*i;
    return *this;
 }
@@ -640,8 +658,12 @@ const fraction fraction::operator -(const fraction &f) const{
    return fraction(n*f.d-d*f.n, d*f.d);
 }
 
-const fraction fraction::operator -(int i) const{
+const fraction fraction::operator -(long i) const{
    return fraction(n-d*i, d);
+}
+
+const fraction operator -(long i, const fraction &f) const{
+   return fraction(f.n-f.d*i, f.d);
 }
 
 const fraction &fraction::operator -=(const fraction &f) const{
@@ -650,7 +672,7 @@ const fraction &fraction::operator -=(const fraction &f) const{
    return *this;
 }
 
-const fraction &fraction::operator -=(int i) const{
+const fraction &fraction::operator -=(long i) const{
    n = n-d*i;
    return *this;
 }
@@ -659,8 +681,12 @@ const fraction fraction::operator *(const fraction &f) const{
    return fraction(n*f.n, d*f.d);
 }
 
-const fraction fraction::operator *(int i) const{
+const fraction fraction::operator *(long i) const{
    return fraction(n*i, d);
+}
+
+const fraction operator *(long i, const fraction &f) const{
+   return fraction(f.n*i, f.d);
 }
 
 const fraction &fraction::operator *=(const fraction &f) const{
@@ -669,7 +695,7 @@ const fraction &fraction::operator *=(const fraction &f) const{
    return *this;
 }
 
-const fraction &fraction::operator *=(int i) const{
+const fraction &fraction::operator *=(long i) const{
    n = n*i;
    return *this;
 }
@@ -678,8 +704,12 @@ const fraction fraction::operator /(const fraction &f) const{
    return fraction(n*f.d, d*f.n);
 }
 
-const fraction fraction::operator /(int i) const{
+const fraction fraction::operator /(long i) const{
    return fraction(n, d*i);
+}
+
+const fraction operator /(long i, const fraction &f) const{
+   return fraction(f.d*i, f.n);
 }
 
 const fraction &fraction::operator /=(const fraction &f) const{
@@ -688,7 +718,37 @@ const fraction &fraction::operator /=(const fraction &f) const{
    return *this;
 }
 
-const fraction &fraction::operator /=(int i) const{
+const fraction &fraction::operator /=(long i) const{
    d = d*i;
    return *this;
+}
+
+bool fraction::operator ==(const fraction &f) const{
+   fraction thisNormalized(*this), fNormalized(f);
+   thisNormalized.normalize();
+   fNormalized.normalize();
+   return (thisNormalized.n == fNormalized.n)&&(thisNormalized.d == fNormalized.d);
+}
+
+bool fraction::operator !=(const fraction &f) const{
+   fraction thisNormalized(*this), fNormalized(f);
+   thisNormalized.normalize();
+   fNormalized.normalize();
+   return (thisNormalized.n != fNormalized.n)||(thisNormalized.d != fNormalized.d);
+}
+
+bool fraction::operator >(const fraction &f) const{
+   return (*this).toDouble() > f.toDouble();
+}
+
+bool fraction::operator >=(const fraction &f) const{
+   return ((*this).toDouble() > f.toDouble())||((*this) == f);
+}
+
+bool fraction::operator <(const fraction &f) const{
+   return (*this).toDouble() < f.toDouble();
+}
+
+bool fraction::operator <=(const fraction &f) const{
+   return ((*this).toDouble() < f.toDouble())||((*this) == f);
 }

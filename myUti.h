@@ -368,35 +368,48 @@ extern const vector3d x3d, y3d, z3d;
 
 class fraction{
    private:
-      int n, d; // numerator and denominator
+      long n, d; // numerator and denominator
    public:
       fraction():n(1),d(1){}
-      fraction(int newN):n(newN),d(1){}
-      fraction(int newN, int newD):n(newN),d(newD){}
+      fraction(long newN):n(newN),d(1){}
+      fraction(long newN, long newD):n(newN),d(newD){}
       fraction(const fraction &f):n(f.n),d(f.d){}
       double getN() const;
       void setN(double newN);
       double getD() const;
       void setD(double newD);
       void normalize();
+      const fraction getNormalized() const;
       void invert();
+      const fraction getInverted() const;
+      double toDouble();
       const fraction &operator =(const fraction &f);
       const fraction operator +(const fraction &f) const;
-      const fraction operator +(int i) const;
+      const fraction operator +(long i) const;
+      friend const fraction operator +(long i, const fraction &f) const;
       const fraction operator +=(const fraction &f) const;
-      const fraction operator +=(int i) const;
+      const fraction operator +=(long i) const;
       const fraction operator -(const fraction &f) const;
-      const fraction operator -(int i) const;
+      const fraction operator -(long i) const;
+      friend const fraction operator -(long i, const fraction &f) const;
       const fraction operator -=(const fraction &f) const;
-      const fraction operator -=(int i) const;
+      const fraction operator -=(long i) const;
       const fraction operator *(const fraction &f) const;
-      const fraction operator *(int i) const;
+      const fraction operator *(long i) const;
+      friend const fraction operator *(long i, const fraction &f) const;
       const fraction operator *=(const fraction &f) const;
-      const fraction operator *=(int i) const;
+      const fraction operator *=(long i) const;
       const fraction operator /(const fraction &f) const;
-      const fraction operator /(int i) const;
+      const fraction operator /(long i) const;
+      friend const fraction operator /(long i, const fraction &f) const;
       const fraction operator /=(const fraction &f) const;
-      const fraction operator /=(int i) const;
+      const fraction operator /=(long i) const;
+      bool operator ==(const fraction &f) const;
+      bool operator !=(const fraction &f) const;
+      bool operator >(const fraction &f) const;
+      bool operator >=(const fraction &f) const;
+      bool operator <(const fraction &f) const;
+      bool operator <=(const fraction &f) const;
 }
 
 /*****************************************************************
