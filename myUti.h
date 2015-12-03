@@ -1,6 +1,6 @@
 /*
  *    myUti.h
- *    01/2013 - 10/2015
+ *    01/2013 - 12/2015
  *    by Ian Esteves do Nascimento
  *    ianesteves@poli.ufrj.br
  *    Random functions and classes for future reference.
@@ -202,7 +202,57 @@
  *    ************************************************************
  *
  *    class fraction
- *      A division between 2 integers. No restrictions towards division by zero.
+ *       A division between 2 integers. No restrictions towards division by zero.
+ *       Operators:
+ *          fraction operator =(fraction);
+ *          fraction operator +(fraction);
+ *          fraction operator +(long);
+ *          fraction operator +=(fraction);
+ *          fraction operator +=(long);
+ *          fraction operator -(fraction);
+ *          fraction operator -(long);
+ *          fraction operator -=(fraction);
+ *          fraction operator -=(long);
+ *          fraction operator *(fraction);
+ *          fraction operator *(long);
+ *          fraction operator *=(fraction);
+ *          fraction operator *=(long);
+ *          fraction operator /(fraction);
+ *          fraction operator /(long);
+ *          fraction operator /=(fraction);
+ *          fraction operator /=(long);
+ *          bool operator ==(fraction);
+ *          bool operator !=(fraction);
+ *          bool operator >(fraction);
+ *          bool operator >=(fraction);
+ *          bool operator <(fraction);
+ *          bool operator <=(fraction);
+ *      Methods:
+ *         fraction()
+ *            Constructor. Initializes fraction as 1/1.
+ *         fraction(long newN)
+ *            Constructor. Denominator is initialized as 1.
+ *         fraction(long newN, long newD)
+ *            Constructor.
+ *         fraction(const fraction f)
+ *            Constructor. Nominator and denominator are copied from f.
+ *         double getN();
+ *         void setN(double newN);
+ *            Getter and setter for the numerator.
+ *         double getD();
+ *         void setD(double newD);
+ *            Getter and setter for the denominator.
+ *         void normalize();
+ *            Reduces the fraction to its minimal form (e.g. 6/4 becomes 3/2)
+ *         fraction getNormalized();
+ *            Generates a new fraction in minimal form.
+ *            The current fraction is unchanged.
+ *         void invert();
+ *            Swaps numerator and denominator.
+ *         fraction getInverted();
+ *            Generates a news fraction with numerator and denominator swapped.
+ *         double toDouble();
+ *            Divides numerator and denominator.
  *
  */
 
