@@ -254,16 +254,48 @@
  *         double toDouble();
  *            Divides numerator and denominator.
  *
+ *    ************************************************************
+ *                            Randomizer
+ *    ************************************************************
+ *    
+ *    abstract class randomizer<class T>
+ *       Given a list of T, randomly select one of the elements.
+ *       Methods:
+ *          void push(T)
+ *          T select()
+ *
+ *    class randomizerConstant<class T> : randomizer<T>
+ *       Every element has the same probability of being selected.
+ *
+ *    class randomizerLinear<class T> : randomizer<T>
+ *       The elements have a declining linear probability of being selected.
+ *       Methods:
+ *          randomizerLinear(double newRatio)
+ *             Constructor. Takes the ratio between the probabilities of
+ *             selecting the first and last element. Ratio must be greater
+ *             than 1.
+ *
+ *    class randomizerGeometric<class T> : randomizer<T>
+ *       The elements have a declining geometric probability of being selected.
+ *       Methods:
+ *          randomizerGeometric(double newRatio)
+ *             Constructor. Takes the ratio between the probabilities of
+ *             selecting the first and last element. Ratio must be greater
+ *             than 1.
+ *
  */
 
 #ifndef MY_UTI_H
 #define MY_UTI_H "myUti.h"
 
+#include <cstdlib>
+#include <cmath>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <algorithm>
 #include <cstdarg>
+#include <stdexcept>
 
 /*****************************************************************
                                Misc
@@ -432,35 +464,72 @@ class fraction{
       const fraction getNormalized() const;
       void invert();
       const fraction getInverted() const;
-      double toDouble();
+      double toDouble() const;
       const fraction &operator =(const fraction &f);
       const fraction operator +(const fraction &f) const;
       const fraction operator +(long i) const;
-      friend const fraction operator +(long i, const fraction &f) const;
-      const fraction operator +=(const fraction &f) const;
-      const fraction operator +=(long i) const;
+      friend const fraction operator +(long i, const fraction &f);
+      const fraction &operator +=(const fraction &f);
+      const fraction &operator +=(long i);
       const fraction operator -(const fraction &f) const;
       const fraction operator -(long i) const;
-      friend const fraction operator -(long i, const fraction &f) const;
-      const fraction operator -=(const fraction &f) const;
-      const fraction operator -=(long i) const;
+      friend const fraction operator -(long i, const fraction &f);
+      const fraction &operator -=(const fraction &f);
+      const fraction &operator -=(long i);
       const fraction operator *(const fraction &f) const;
       const fraction operator *(long i) const;
-      friend const fraction operator *(long i, const fraction &f) const;
-      const fraction operator *=(const fraction &f) const;
-      const fraction operator *=(long i) const;
+      friend const fraction operator *(long i, const fraction &f);
+      const fraction &operator *=(const fraction &f);
+      const fraction &operator *=(long i);
       const fraction operator /(const fraction &f) const;
       const fraction operator /(long i) const;
-      friend const fraction operator /(long i, const fraction &f) const;
-      const fraction operator /=(const fraction &f) const;
-      const fraction operator /=(long i) const;
+      friend const fraction operator /(long i, const fraction &f);
+      const fraction &operator /=(const fraction &f);
+      const fraction &operator /=(long i);
       bool operator ==(const fraction &f) const;
       bool operator !=(const fraction &f) const;
       bool operator >(const fraction &f) const;
       bool operator >=(const fraction &f) const;
       bool operator <(const fraction &f) const;
       bool operator <=(const fraction &f) const;
-}
+};
+
+/*****************************************************************
+                          Randomizer
+*****************************************************************/
+
+template <class T>
+class randomizer{
+   protected:
+      std::vector<T> values;
+   public:
+      void push(T t);
+      virtual T select() = 0;
+};
+
+template <class T>
+class randomizerConstant : public randomizer<T>{
+   public:
+      T select();
+};
+
+template <class T>
+class randomizerLinear : public randomizer<T>{
+   private:
+      double ratio;
+   public:
+      randomizerLinear(double newRatio);
+      T select();
+};
+
+template <class T>
+class randomizerGeometric : public randomizer<T>{
+   private:
+      double ratio;
+   public:
+      randomizerGeometric(double newRatio);
+      T select();
+};
 
 /*****************************************************************
                         Implementation
@@ -531,6 +600,64 @@ T &varManager<T>::operator [](std::string id){
    }
    it = std::lower_bound(varList.begin(), varList.end(), newVar);
    return (*it).value;
+}
+
+template <class T>
+void randomizer<T>::push(T t){
+   values.push_back(t);
+}
+
+template <class T>
+T randomizerConstant<T>::select(){
+   if(this->values.size() < 1)
+      throw std::length_error("randomizerConstant needs at least one item to select from");
+   return this->values[rand()%this->values.size()];
+}
+
+template <class T>
+randomizerLinear<T>::randomizerLinear(double newRatio){
+   if(newRatio < 1.0)
+      throw std::invalid_argument("randomizerLinear ratio must be greater than 1");
+   ratio = newRatio;
+}
+
+template <class T>
+T randomizerLinear<T>::select(){
+   int n = this->values.size();
+   if(n < 1)
+      throw std::length_error("randomizerLinear needs at least one item to select from");
+   if(n == 1)
+      return this->values[0];
+   double p0 = 2.0*ratio/(n*(ratio+1.0));
+   double r = 2.0*(n*p0-1.0)/(n*(n-1.0));
+   double number = (rand()%10000)/10000.0;
+   for(int i = 0 ; i < n-1 ; i++)
+      if(number <= p0*(i+1.0)-r*i*(i+1.0)/2.0)
+         return this->values[i];
+   return this->values[n-1];
+}
+
+template <class T>
+randomizerGeometric<T>::randomizerGeometric(double newRatio){
+   if(newRatio < 1.0)
+      throw std::invalid_argument("randomizerGeomtric ratio must be greater than 1");
+   ratio = newRatio;
+}
+
+template <class T>
+T randomizerGeometric<T>::select(){
+   int n = this->values.size();
+   if(n < 1)
+      throw std::invalid_argument("randomizerGeomtric ratio must be greater than 1");
+   if(n == 1)
+      return this->values[0];
+   double r = std::pow(ratio, 1.0/(n-1.0));
+   double p0 = (1.0-1.0/r)/(1.0-1.0/std::pow(r, n));
+   double number = (rand()%10000)/10000.0;
+   for(int i = 0 ; i < n-1 ; i++)
+      if(number <= p0*(1.0-1.0/std::pow(r, i+1.0))/(1.0-1.0/r))
+         return this->values[i];
+   return this->values[n-1];
 }
 
 #endif

@@ -161,3 +161,10 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# C
+main.cpp
+*.o
+*.exe
+Makefile
+makefile
